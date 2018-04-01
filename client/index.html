@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+</head>
+<body>
+<script type="text/javascript" src="client.js"></script>
+<script type="text/javascript">
+  const wsUrl = "ws://localhost:9000/ws"
+  const ws = new WebSocket(wsUrl)
+
+  ws.onopen = (event) => {
+    console.log(`WebSocket open on [${wsUrl}]!`, 'happy')
+    try {
+      // send heartbeat every 5 seconds
+      // window.setInterval(() => { ws.send(JSON.stringify({uuid: config.heartbeatUUID})) }, 5000)
+    } catch(e) {
+      log("Server is drunk :( can't send him heartbeat!", 'error')
+      console.log(e)
+    }
+  }
+
+  ws.onmessage = (message) => {
+    try{
+      console.log(message)
+      run(message.data)
+    } catch (e) {
+      console.log(`Couldn't parse this as JSON: ${message.data}`, "\nError: ", e)
+    }
+  }
+
+  ws.onclose = (event) => console.log("WebSocket closed!", 'error')
+  ws.onerror = (event) => console.log(`WebSocket had error! ${event}`, 'error')
+</script>
+</body>
+</html>
